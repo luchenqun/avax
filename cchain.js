@@ -1,0 +1,37 @@
+import { Avalanche, BinTools, Buffer, BN } from "avalanche";
+import { ethers } from "ethers";
+import config from "./config.js";
+const { host, port, protocol, networkID, cChainUrl, cPrivateKey } = config;
+
+let avalanche = new Avalanche(host, port, protocol, networkID);
+const cchain = avalanche.CChain();
+const privateKey = cPrivateKey;
+const provider = new ethers.providers.JsonRpcProvider(cChainUrl);
+
+const baseFee = async () => {
+  console.log("============================cchain============================");
+  console.log("getBaseFee = ", (await cchain.getBaseFee()).toString());
+};
+
+const sendTx = async () => {
+  const wallet = new ethers.Wallet(privateKey, provider);
+  const to = "0x00000be6819f41400225702d32d3dd23663dd690";
+  const tx = {
+    to,
+    value: ethers.utils.parseEther("1.0"),
+  };
+
+  await wallet.signTransaction(tx);
+  console.log(wallet.address + " have balance ", (await wallet.getBalance()).toString());
+  console.log(wallet.address + " nonce ", await wallet.getTransactionCount());
+  const txReply = await wallet.sendTransaction(tx);
+  await txReply.wait();
+  console.log(to + " have balance ", (await provider.getBalance(to)).toString());
+};
+
+{
+  (async () => {
+    await baseFee();
+    await sendTx();
+  })();
+}

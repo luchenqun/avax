@@ -1,7 +1,8 @@
 import { Avalanche, BinTools, Buffer, BN } from "avalanche";
+import config from "./config.js";
 
-let myNetworkID = 1337;
-let avalanche = new Avalanche("avax-test.lucq.fun", 80, "http", myNetworkID);
+const { host, port, protocol, networkID, xAddress, pAddress } = config;
+const avalanche = new Avalanche(host, port, protocol, networkID);
 
 const pchain = avalanche.PChain();
 const xchain = avalanche.XChain();
@@ -28,7 +29,7 @@ const testXchain = async () => {
   console.log("blockchainID = ", blockchainID);
   console.log("blockchainAlias = ", blockchainAlias);
 
-  const address = "X-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p";
+  const address = xAddress;
   const balances = await xchain.getAllBalances(address);
   console.log(address + " balances = ", JSON.stringify(balances));
 };
@@ -41,7 +42,7 @@ const testPchain = async () => {
   console.log("blockchainID = ", blockchainID);
   console.log("blockchainAlias = ", blockchainAlias);
 
-  const address = "P-custom18jma8ppw3nhx5r4ap8clazz0dps7rv5u9xde7p";
+  const address = pAddress;
   const balances = await pchain.getBalance(address);
   console.log("balances = ", JSON.stringify(balances));
 };
