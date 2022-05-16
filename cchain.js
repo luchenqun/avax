@@ -1,12 +1,12 @@
 import { Avalanche, BinTools, Buffer, BN } from "avalanche";
 import { ethers } from "ethers";
 import config from "./config.js";
-const { host, port, protocol, networkID, cChainUrl, cPrivateKey } = config;
+const { host, port, protocol, networkID, cChainRpcUrl, cPrivateKey } = config;
 
 let avalanche = new Avalanche(host, port, protocol, networkID);
 const cchain = avalanche.CChain();
 const privateKey = cPrivateKey;
-const provider = new ethers.providers.JsonRpcProvider(cChainUrl);
+const provider = new ethers.providers.JsonRpcProvider(cChainRpcUrl);
 
 const baseFee = async () => {
   console.log("============================cchain============================");

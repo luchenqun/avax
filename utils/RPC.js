@@ -36,7 +36,7 @@ export default class RPC {
   async post(method, params, async = true) {
     let data = formatParams(method, params);
     if (async) {
-      let reply = await client.post("", data);
+      let reply = await this.client.post("", data);
       return new Promise((resolve, reject) => {
         if (reply.status === 200) {
           if (reply.data.error) {
@@ -49,7 +49,7 @@ export default class RPC {
         }
       });
     } else {
-      return client.post("", data);
+      return this.client.post("", data);
     }
   }
 }
