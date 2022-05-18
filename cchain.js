@@ -1,12 +1,5 @@
-import { Avalanche, BinTools, Buffer, BN } from "avalanche";
-import { ethers } from "ethers";
-import config from "./config.js";
-const { host, port, protocol, networkID, cChainRpcUrl, cPrivateKey } = config;
-
-let avalanche = new Avalanche(host, port, protocol, networkID);
-const cchain = avalanche.CChain();
-const privateKey = cPrivateKey;
-const provider = new ethers.providers.JsonRpcProvider(cChainRpcUrl);
+import AVAX from "./avax.js";
+const { cchainProvider, cPrivateKey: privateKey, cchain, ethers } = AVAX;
 
 const baseFee = async () => {
   console.log("============================cchain============================");
@@ -14,7 +7,7 @@ const baseFee = async () => {
 };
 
 const sendTx = async () => {
-  const wallet = new ethers.Wallet(privateKey, provider);
+  const wallet = new ethers.Wallet(privateKey, cchainProvider);
   const to = "0x00000be6819f41400225702d32d3dd23663dd690";
   const tx = {
     to,
@@ -26,7 +19,7 @@ const sendTx = async () => {
   console.log(wallet.address + " nonce ", await wallet.getTransactionCount());
   const txReply = await wallet.sendTransaction(tx);
   await txReply.wait();
-  console.log(to + " have balance ", (await provider.getBalance(to)).toString());
+  console.log(to + " have balance ", (await cchainProvider.getBalance(to)).toString());
 };
 
 {

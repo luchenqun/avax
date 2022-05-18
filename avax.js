@@ -1,57 +1,25 @@
-import { Avalanche, BinTools, Buffer, BN } from "avalanche";
+import Avax, { BinTools, avm } from "avalanche";
 import config from "./config.js";
+import { ethers } from "ethers";
+import RPC from "./utils/RPC.js";
 
-const { host, port, protocol, networkID, xAddress, pAddress } = config;
-const avalanche = new Avalanche(host, port, protocol, networkID);
+const avalanche = new Avax.Avalanche(config.host, config.port, config.protocol, config.networkID);
 
-const pchain = avalanche.PChain();
-const xchain = avalanche.XChain();
-const cchain = avalanche.CChain();
-
-const testChainInfo = async () => {
-  console.log("===========================chainInfo===========================");
-  const keystore = avalanche.NodeKeys();
-  const health = avalanche.Health();
-  console.log("health", JSON.stringify(await health.health()));
+// 需要用到的都从这里面导出去
+export default {
+  ...config,
+  Avax,
+  avalanche,
+  pchain: avalanche.PChain(),
+  xchain: avalanche.XChain(),
+  cchain: avalanche.CChain(),
+  cchainProvider: new ethers.providers.JsonRpcProvider(config.cChainRpcUrl),
+  xrpc: new RPC(config.xChainUrl),
+  crpc: new RPC(config.cChainUrl),
+  prpc: new RPC(config.pChainUrl),
+  keystore: avalanche.NodeKeys(),
+  BinTools,
+  avm,
+  ethers,
+  sleep: (time) => new Promise((resolve) => setTimeout(resolve, time)),
 };
-
-// C-Chain-Test
-const testCchain = async () => {
-  console.log("============================cchain============================");
-  console.log("getBaseFee = ", (await cchain.getBaseFee()).toString());
-};
-
-// X-Chain-Test
-const testXchain = async () => {
-  console.log("============================xchain============================");
-  const blockchainID = xchain.getBlockchainID();
-  const blockchainAlias = xchain.getBlockchainAlias();
-  console.log("blockchainID = ", blockchainID);
-  console.log("blockchainAlias = ", blockchainAlias);
-
-  const address = xAddress;
-  const balances = await xchain.getAllBalances(address);
-  console.log(address + " balances = ", JSON.stringify(balances));
-};
-
-// P-Chain-Test
-const testPchain = async () => {
-  console.log("============================pchain============================");
-  const blockchainID = pchain.getBlockchainID();
-  const blockchainAlias = pchain.getBlockchainAlias();
-  console.log("blockchainID = ", blockchainID);
-  console.log("blockchainAlias = ", blockchainAlias);
-
-  const address = pAddress;
-  const balances = await pchain.getBalance(address);
-  console.log("balances = ", JSON.stringify(balances));
-};
-
-{
-  (async () => {
-    await testChainInfo();
-    await testCchain();
-    await testXchain();
-    await testPchain();
-  })();
-}

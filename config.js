@@ -1,6 +1,6 @@
 export default {
   host: "avax-test.lucq.fun",
-  port: 80,
+  port: undefined,
   protocol: "http",
   networkID: 1337,
   hrp: "custom",

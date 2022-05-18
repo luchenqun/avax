@@ -1,19 +1,5 @@
-import { Avalanche, BinTools, Buffer, BN } from "avalanche";
-import { ethers } from "ethers";
-import config from "./config.js";
-import RPC from "./utils/RPC.js";
-const { host, port, protocol, networkID, cChainUrl, cChainRpcUrl, xChainUrl, xAddress, xPrivateKey, username, password } = config;
-
-const avalanche = new Avalanche(host, port, protocol, networkID);
-const pchain = avalanche.PChain();
-const xchain = avalanche.XChain();
-const cchain = avalanche.CChain();
-const cchainProvider = new ethers.providers.JsonRpcProvider(cChainRpcUrl);
-
-const xrpc = new RPC(xChainUrl);
-const crpc = new RPC(cChainUrl);
-
-const sleep = (time) => new Promise((resolve) => setTimeout(resolve, time));
+import AVAX from "./avax.js";
+const { xchain, cchainProvider, xrpc, crpc, xAddress, username, password, sleep } = AVAX;
 
 // X 链资产往 C 链资产转移
 const tranferAssetXChainToCChain = async () => {
@@ -98,11 +84,11 @@ const tranferAssetCChainToXChain = async () => {
 {
   (async () => {
     try {
-      console.log("tranferAssetXChainToCChain")
+      console.log("tranferAssetXChainToCChain");
       await tranferAssetXChainToCChain();
 
-      // console.log("tranferAssetCChainToXChain")
-      // await tranferAssetCChainToXChain();
+      console.log("tranferAssetCChainToXChain");
+      await tranferAssetCChainToXChain();
     } catch (error) {
       console.error("error:", error);
     }

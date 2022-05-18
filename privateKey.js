@@ -1,5 +1,5 @@
-import { BinTools, avm } from "avalanche";
-import { ethers } from "ethers";
+import AVAX from "./avax.js";
+const { ethers, BinTools, avm } = AVAX;
 
 const privateKey = (hrp = "custom", chainPrefix = "X", _privateKey) => {
   let wallet = null;
